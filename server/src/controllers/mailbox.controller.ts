@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import { dbService } from '../config/dbService';
 import { AuthRequest } from '../middlewares/auth.middleware';
@@ -129,6 +129,36 @@ export const deleteMailbox = async (req: AuthRequest, res: Response, next: NextF
     await dbService.mailboxes.delete(id);
 
     res.json({ message: 'Mailbox deleted successfully.' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const dovecotAuth = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { user, pass } = req.body;
+
+    if (!user || !pass) {
+      return res.status(400).json({ error: 'fail' });
+    }
+
+    const mailbox = await dbService.mailboxes.findByEmail(user.toLowerCase());
+    if (!mailbox || mailbox.status !== 'active') {
+      res.setHeader('Password-State', 'invalid');
+      return res.status(401).json({ error: 'fail' });
+    }
+
+    const isMatch = await bcrypt.compare(pass, mailbox.password);
+    if (!isMatch) {
+      res.setHeader('Password-State', 'invalid');
+      return res.status(401).json({ error: 'fail' });
+    }
+
+    // Return custom header as expected by Dovecot HTTP Auth
+    res.setHeader('Password-State', 'OK');
+    res.setHeader('Auth-User', user);
+    
+    return res.status(200).json({ status: 'ok' });
   } catch (error) {
     next(error);
   }

@@ -4,10 +4,14 @@ import {
   getMailboxes,
   resetPassword,
   deleteMailbox,
+  dovecotAuth,
 } from '../controllers/mailbox.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
+
+// Public route used by local Dovecot service for HTTP auth
+router.post('/dovecot-auth', dovecotAuth);
 
 router.use(authMiddleware);
 
