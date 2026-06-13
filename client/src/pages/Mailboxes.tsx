@@ -298,7 +298,7 @@ export const Mailboxes: React.FC = () => {
           <div>
             <h4 style={{ fontSize: '0.95rem', color: 'var(--primary)', marginBottom: '8px' }}>IMAP (Incoming)</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.8rem', fontFamily: 'monospace' }}>
-              <div>Host: mail.zypost.com</div>
+              <div>Host: {window.location.hostname}</div>
               <div>Port: 993</div>
               <div>SSL: Enabled</div>
             </div>
@@ -307,7 +307,7 @@ export const Mailboxes: React.FC = () => {
           <div>
             <h4 style={{ fontSize: '0.95rem', color: 'var(--secondary)', marginBottom: '8px' }}>SMTP (Outgoing)</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.8rem', fontFamily: 'monospace' }}>
-              <div>Host: mail.zypost.com</div>
+              <div>Host: {window.location.hostname}</div>
               <div>Port: 587</div>
               <div>SSL: STARTTLS / Enabled</div>
             </div>
